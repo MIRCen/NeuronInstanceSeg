@@ -34,12 +34,12 @@ Optional: folds.csv attributes each image in the training set a label among [0, 
 
 To train a model on a dataset located at `./datasets` and save the model weight to `./model`, use the following command:
 
-```python histoGAN.py --name histoGAN_model -data ./datasets -model ./model```
+```python train_efficient_b5.py -data ./datasets -model ./model```
 
 #### Prediction
 To predict images at `./test_data` using the model weight at `./model`, and save the prediction to `./prediction` use the following command:
 
-```python train_efficient_b5.py -i ./test_data -model ./model -o ./prediction```
+```python predict_efficient_b5.py -i ./test_data -model ./model -o ./prediction```
 
 #### Post-processing
 The prediction of the neural network is a probability map, it requires a post-processing step to obtain the final instance segmentation:
