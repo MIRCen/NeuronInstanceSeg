@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from os import path, mkdir, listdir
 import numpy as np
 np.random.seed(1)
@@ -8,36 +9,20 @@ tf.random.set_seed(1)
 import timeit
 import cv2
 from tqdm import tqdm
-from efficientunet import *
+from .efficientunet import *
 import os
 import argparse
 
-parser = argparse.ArgumentParser()
-parser.add_argument('-i', help='input test image folder', type=str)
-parser.add_argument('-model', help='pretrained model weight path', type=str)
-parser.add_argument('-o', help='output probability map folder', type=str)
-args = parser.parse_args()
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-i', help='input test image folder', type=str)
+    parser.add_argument('-model', help='pretrained model weight path', type=str)
+    parser.add_argument('-o', help='output probability map folder', type=str)
+    args = parser.parse_args()
 
-test_folder = args.i
-models_folder = args.model
-test_pred = args.o
-
-def preprocess_inputs(x):
-    x = np.asarray(x, dtype='float32')
-    x /= 127.5
-    x -= 1.
-    return x
-
-def bgr_to_lab(img):
-    lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
-    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(17, 17))
-    lab = clahe.apply(lab[:, :, 0])
-    if lab.mean() > 127:
-        lab = 255 - lab
-    return lab[..., np.newaxis]
-
-if __name__ == '__main__':
-    
+    test_folder = args.i
+    models_folder = args.model
+    test_pred = args.o
 
     if not path.isdir(test_pred):
         mkdir(test_pred)
@@ -75,3 +60,20 @@ if __name__ == '__main__':
         
     elapsed = timeit.default_timer() - t0
     print('Time: {:.6f} s'.format(elapsed))
+
+def preprocess_inputs(x):
+    x = np.asarray(x, dtype='float32')
+    x /= 127.5
+    x -= 1.
+    return x
+
+def bgr_to_lab(img):
+    lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
+    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(17, 17))
+    lab = clahe.apply(lab[:, :, 0])
+    if lab.mean() > 127:
+        lab = 255 - lab
+    return lab[..., np.newaxis]
+
+if __name__ == '__main__':
+    main()
